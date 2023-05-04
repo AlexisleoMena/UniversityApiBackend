@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable disable
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,7 +11,7 @@ using UniversityApiBackend.Models.DataModels;
 
 namespace UniversityApiBackend.Controllers
 {
-    [Route("api/[controller]")] // Controller for request to https://localhost:7220/api/users
+    [Route("api/[controller]")] // Controller for Requests to https://localhost:7190/api/users
     [ApiController]
     public class UsersController : ControllerBase
     {
@@ -21,34 +22,39 @@ namespace UniversityApiBackend.Controllers
             _context = context;
         }
 
-        // GET: https://localhost:7220/api/users
+        // GET: https://localhost:7190/api/users
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
-            if (_context.Users == null)
-                return NotFound();
             return await _context.Users.ToListAsync();
         }
 
-        // GET: https://localhost:7220/api/users/:id
+        // GET: https://localhost:7190/api/users/1
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(int id)
         {
-            if (_context.Users == null)
-                return NotFound();
             var user = await _context.Users.FindAsync(id);
+
             if (user == null)
+            {
                 return NotFound();
+            }
+
             return user;
         }
 
-        // PUT: https://localhost:7220/api/users/:id
+        // PUT: https://localhost:7190/api/users/1
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(int id, User user)
         {
             if (id != user.Id)
+            {
                 return BadRequest();
+            }
+
             _context.Entry(user).State = EntityState.Modified;
+
             try
             {
                 await _context.SaveChangesAsync();
@@ -56,35 +62,38 @@ namespace UniversityApiBackend.Controllers
             catch (DbUpdateConcurrencyException)
             {
                 if (!UserExists(id))
+                {
                     return NotFound();
+                }
                 else
+                {
                     throw;
+                }
             }
+
             return NoContent();
         }
 
-        // POST: https://localhost:7220/api/users
+        // POST: https://localhost:7190/api/users
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {
-            if (_context.Users == null)
-                return Problem("Entity set 'UniversityDBContext.Users'  is null.");
-
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
+
             return CreatedAtAction("GetUser", new { id = user.Id }, user);
         }
 
-        // DELETE: https://localhost:7220/api/users/:id
+        // DELETE: https://localhost:7190/api/users/1
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
-            if (_context.Users == null)
-                return NotFound();
-
             var user = await _context.Users.FindAsync(id);
             if (user == null)
+            {
                 return NotFound();
+            }
 
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
@@ -94,7 +103,7 @@ namespace UniversityApiBackend.Controllers
 
         private bool UserExists(int id)
         {
-            return (_context.Users?.Any(e => e.Id == id)).GetValueOrDefault();
+            return _context.Users.Any(user => user.Id == id);
         }
     }
 }

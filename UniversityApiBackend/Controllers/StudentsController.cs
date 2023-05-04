@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable disable
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,10 +30,6 @@ namespace UniversityApiBackend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Student>>> GetStudents()
         {
-          if (_context.Students == null)
-          {
-              return NotFound();
-          }
             return await _context.Students.ToListAsync();
         }
 
@@ -40,10 +37,6 @@ namespace UniversityApiBackend.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Student>> GetStudent(int id)
         {
-          if (_context.Students == null)
-          {
-              return NotFound();
-          }
             var student = await _context.Students.FindAsync(id);
 
             if (student == null)
@@ -90,10 +83,6 @@ namespace UniversityApiBackend.Controllers
         [HttpPost]
         public async Task<ActionResult<Student>> PostStudent(Student student)
         {
-          if (_context.Students == null)
-          {
-              return Problem("Entity set 'UniversityDBContext.Students'  is null.");
-          }
             _context.Students.Add(student);
             await _context.SaveChangesAsync();
 
@@ -104,10 +93,6 @@ namespace UniversityApiBackend.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteStudent(int id)
         {
-            if (_context.Students == null)
-            {
-                return NotFound();
-            }
             var student = await _context.Students.FindAsync(id);
             if (student == null)
             {
@@ -122,7 +107,7 @@ namespace UniversityApiBackend.Controllers
 
         private bool StudentExists(int id)
         {
-            return (_context.Students?.Any(e => e.Id == id)).GetValueOrDefault();
+            return _context.Students.Any(e => e.Id == id);
         }
     }
 }

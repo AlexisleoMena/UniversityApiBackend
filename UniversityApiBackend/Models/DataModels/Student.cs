@@ -12,7 +12,7 @@ namespace UniversityApiBackend.Models.DataModels
         public DateTime Dob { get; set; }
 
 
-        public ICollection<Course> courses { get; set; } = new List<Course>();
+        public ICollection<Course> Courses { get; set; } = new List<Course>();
 
     }
 }
